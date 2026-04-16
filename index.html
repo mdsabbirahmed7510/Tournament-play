@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 Complete Manual Tournament - Play Every Match Yourself</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .setup-section {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        input {
+            padding: 12px 20px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102,126,234,0.3);
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: bold;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .team-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .match-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+        }
+
+        .match-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .match-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .match-teams {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 30px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .team {
+            flex: 1;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid transparent;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .team:hover {
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .team.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #ffd700;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(102,126,234,0.5);
+        }
+
+        .vs {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ff6b6b;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .winner-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 16px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .round-container {
+            margin: 30px 0;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .round-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 25px;
+            text-align: center;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .celebration-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .celebration-content {
+            text-align: center;
+            animation: bounceIn 0.8s;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .firework {
+            position: fixed;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: explode 1s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(30);
+                opacity: 0;
+            }
+        }
+
+        .champion-banner {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            border-radius: 20px;
+            margin-top: 30px;
+            animation: glow 1s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 10px gold; }
+            to { box-shadow: 0 0 40px gold; }
+        }
+
+        .champion-name {
+            font-size: 56px;
+            font-weight: bold;
+            color: gold;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            margin: 20px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        .match-history {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            padding: 12px;
+            margin: 8px 0;
+            background: white;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .history-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdef5 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .next-round-btn {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            margin-top: 20px;
+            font-size: 20px;
+            padding: 15px 40px;
+            width: 100%;
+        }
+
+        .play-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .match-teams {
+                flex-direction: column;
+            }
+            
+            .team {
+                width: 100%;
+            }
+            
+            .vs {
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏆 COMPLETE MANUAL TOURNAMENT 🏆</h1>
+        <div class="subtitle">Play Every Match Yourself | Quarter Final | Semi Final | Final</div>
+
+        <div id="setupSection" class="setup-section">
+            <div class="input-group">
+                <input type="number" id="numTeams" placeholder="Number of teams (2 or more)" min="2" step="1">
+                <button onclick="setupTeams()">Start Tournament</button>
+            </div>
+            <div id="teamInputs" class="team-inputs"></div>
+        </div>
+
+        <div id="tournamentSection" class="hidden">
+            <div class="info-box" id="tournamentInfo"></div>
+            <div class="progress-bar">
+                <div id="progressFill" class="progress-fill"></div>
+            </div>
+            <div id="matchesContainer"></div>
+            <div id="matchHistory" class="match-history"></div>
+            <div id="championSection" class="hidden champion-banner"></div>
+            <button onclick="resetTournament()" style="margin-top: 20px; width: 100%;">Start New Tournament</button>
+        </div>
+    </div>
+
+    <div id="celebrationOverlay" class="celebration-overlay">
+        <div class="celebration-content">
+            <h1 style="color: white; font-size: 70px;">🏆 CHAMPIONS! 🏆</h1>
+            <div id="championDisplay" style="color: gold; font-size: 56px; margin: 20px;"></div>
+            <div style="color: white; font-size: 28px;">👏👏👏 AUDIENCE CLAPPING LOUDLY! 👏👏👏</div>
+            <div style="color: white; font-size: 24px; margin-top: 20px;">🎈🎈🎈 BALLOONS FALLING FROM CEILING! 🎈🎈🎈</div>
+            <div style="color: white; font-size: 20px; margin-top: 10px;">🎉🎉🎉 CONFETTI EXPLOSION! 🎉🎉🎉</div>
+        </div>
+    </div>
+
+    <script>
+        let tournament = {
+            teams: [],
+            rounds: [],
+            currentRound: 0,
+            matchHistory: [],
+            totalMatches: 0,
+            completedMatches: 0,
+            champion: null,
+            waitingForNextRound: false
+        };
+
+        function setupTeams() {
+            const numTeams = parseInt(document.getElementById('numTeams').value);
+            
+            if (isNaN(numTeams) || numTeams < 2) {
+                alert('Please enter a valid number of teams (2 or more)');
+                return;
+            }
+            
+            const teamInputsDiv = document.getElementById('teamInputs');
+            teamInputsDiv.innerHTML = '<h3>📝 Enter Team Names:</h3>';
+            
+            for (let i = 0; i < numTeams; i++) {
+                teamInputsDiv.innerHTML += `
+                    <input type="text" id="team${i}" placeholder="Team ${i + 1} name" style="width: 100%;">
+                `;
+            }
+            
+            teamInputsDiv.innerHTML += `
+                <button onclick="createTournament(${numTeams})" style="grid-column: 1/-1;">▶ Create Tournament</button>
+            `;
+        }
+
+        function createTournament(numTeams) {
+            const teams = [];
+            for (let i = 0; i < numTeams; i++) {
+                const teamName = document.getElementById(`team${i}`).value.trim();
+                if (!teamName) {
+                    alert(`Please enter name for Team ${i + 1}`);
+                    return;
+                }
+                teams.push(teamName);
+            }
+            
+            tournament = {
+                teams: [...teams],
+                rounds: [],
+                currentRound: 0,
+                matchHistory: [],
+                totalMatches: 0,
+                completedMatches: 0,
+                champion: null,
+                waitingForNextRound: false
+            };
+            
+            createRounds();
+            
+            document.getElementById('setupSection').classList.add('hidden');
+            document.getElementById('tournamentSection').classList.remove('hidden');
+            
+            displayRoundInfo();
+            displayCurrentRound();
+            updateProgress();
+        }
+
+        function createRounds() {
+            let currentTeams = [...tournament.teams];
+            let roundNum = 1;
+            
+            while (currentTeams.length > 1) {
+                const matches = [];
+                const roundName = getRoundName(currentTeams.length, roundNum);
+                
+                // Create matches for this round - ALL MANUAL, no auto-complete
+                for (let i = 0; i < currentTeams.length; i += 2) {
+                    if (i + 1 < currentTeams.length) {
+                        matches.push({
+                            team1: currentTeams[i],
+                            team2: currentTeams[i + 1],
+                            winner: null,
+                            completed: false,
+                            roundName: roundName
+                        });
+                    } else {
+                        // For odd number of teams, create a match with null opponent
+                        // This will be manually played later when opponent is determined
+                        matches.push({
+                            team1: currentTeams[i],
+                            team2: null,
+                            winner: null,
+                            completed: false,
+                            roundName: roundName,
+                            isBye: true,
+                            waitingForOpponent: true
+                        });
+                    }
+                }
+                
+                tournament.rounds.push({
+                    name: roundName,
+                    matches: matches,
+                    completed: false
+                });
+                
+                // Prepare next round teams (all null initially, will be filled when matches are played)
+                currentTeams = new Array(matches.length).fill(null);
+                roundNum++;
+            }
+            
+            // Calculate total matches (all matches need to be played manually)
+            tournament.totalMatches = tournament.rounds.reduce((sum, round) => 
+                sum + round.matches.filter(m => m.team1 !== null && (m.team2 !== null || m.waitingForOpponent === false)).length, 0);
+        }
+
+        function getRoundName(numTeamsInRound, roundNum) {
+            if (numTeamsInRound === 2) return "🏆 FINAL 🏆";
+            if (numTeamsInRound === 4) return "🥈 SEMI FINAL 🥈";
+            if (numTeamsInRound === 8) return "📊 QUARTER FINAL 📊";
+            if (numTeamsInRound === 16) return "🔰 PRE-QUARTER FINAL 🔰";
+            return `📍 ROUND ${roundNum}`;
+        }
+
+        function displayRoundInfo() {
+            const currentRoundData = tournament.rounds[tournament.currentRound];
+            const infoBox = document.getElementById('tournamentInfo');
+            const remainingMatches = tournament.rounds.slice(tournament.currentRound).reduce((sum, round) => 
+                sum + round.matches.filter(m => !m.completed && m.team1 !== null && (m.team2 !== null || !m.waitingForOpponent)).length, 0);
+            
+            infoBox.innerHTML = `
+                <strong>🏟️ CURRENT STAGE:</strong> ${currentRoundData.name}<br>
+                <strong>✅ MATCHES PLAYED:</strong> ${tournament.completedMatches} / ${tournament.totalMatches}<br>
+                <strong>🏆 CURRENT CHAMPION:</strong> ${tournament.champion || 'Not decided yet'}<br>
+                <strong>🎯 REMAINING MATCHES:</strong> ${remainingMatches}<br>
+                <strong>🎮 MODE:</strong> Manual Selection (You choose every winner)
+            `;
+        }
+
+        function displayCurrentRound() {
+            const container = document.getElementById('matchesContainer');
+            const currentRoundData = tournament.rounds[tournament.currentRound];
+            
+            container.innerHTML = `<div class="round-container">
+                <div class="round-title">${currentRoundData.name}</div>
+            `;
+            
+            let hasUnplayedMatches = false;
+            
+            currentRoundData.matches.forEach((match, idx) => {
+                if (match.completed) {
+                    container.innerHTML += `
+                        <div class="match-card">
+                            <div class="match-title">🏁 COMPLETED MATCH 🏁</div>
+                            <div class="match-teams">
+                                <div class="team">${match.team1 || 'BYE'}</div>
+                                <div class="vs">VS</div>
+                                <div class="team">${match.team2 || 'BYE'}</div>
+                            </div>
+                            <div class="winner-badge">🏆 WINNER: ${match.winner} 🏆</div>
+                        </div>
+                    `;
+                } else if (match.waitingForOpponent && match.team2 === null) {
+                    // Waiting for opponent from previous round
+                    container.innerHTML += `
+                        <div class="match-card">
+                            <div class="match-title">⏳ WAITING FOR OPPONENT ⏳</div>
+                            <div class="match-teams">
+                                <div class="team">${match.team1}</div>
+                                <div class="vs">VS</div>
+                                <div class="team">TBD (Winner from previous match)</div>
+                            </div>
+                            <div class="winner-badge">🔄 Waiting for opponent to be determined</div>
+                        </div>
+                    `;
+                } else if (match.team1 && match.team2) {
+                    hasUnplayedMatches = true;
+                    container.innerHTML += `
+                        <div class="match-card">
+                            <div class="match-title">⚡ MATCH ${idx + 1} ⚡</div>
+                            <div class="match-teams">
+                                <div class="team" onclick="selectWinner(${tournament.currentRound}, ${idx}, '${match.team1}')" id="round${tournament.currentRound}-match${idx}-team1">
+                                    🏅 ${match.team1}
+                                </div>
+                                <div class="vs">VS</div>
+                                <div class="team" onclick="selectWinner(${tournament.currentRound}, ${idx}, '${match.team2}')" id="round${tournament.currentRound}-match${idx}-team2">
+                                    🏅 ${match.team2}
+                                </div>
+                            </div>
+                            <div id="winner-msg-${tournament.currentRound}-${idx}" style="text-align: center; margin-top: 10px;"></div>
+                        </div>
+                    `;
+                }
+            });
+            
+            container.innerHTML += `</div>`;
+            
+            // Check if all matches in current round are completed
+            const allCompleted = currentRoundData.matches.every(m => m.completed);
+            
+            if (allCompleted && tournament.currentRound + 1 < tournament.rounds.length && !tournament.waitingForNextRound) {
+                tournament.waitingForNextRound = true;
+                container.innerHTML += `
+                    <button class="next-round-btn" onclick="goToNextRound()">
+                        🎯 PROCEED TO ${tournament.rounds[tournament.currentRound + 1].name} 🎯
+                    </button>
+                `;
+            } else if (!allCompleted && hasUnplayedMatches) {
+                container.innerHTML += `
+                    <div style="text-align: center; margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 10px;">
+                        ⚡ Click on any team name to declare them as winner! ⚡
+                    </div>
+                `;
+            }
+        }
+
+        function selectWinner(roundIdx, matchIdx, winner) {
+            const match = tournament.rounds[roundIdx].matches[matchIdx];
+            
+            if (match.completed) {
+                alert('This match has already been played!');
+                return;
+            }
+            
+            if (!match.team2) {
+                alert('This match is waiting for an opponent from previous round!');
+                return;
+            }
+            
+            // Highlight selected team
+            document.querySelectorAll(`#round${roundIdx}-match${matchIdx}-team1, #round${roundIdx}-match${matchIdx}-team2`).forEach(el => {
+                if (el) el.classList.remove('selected');
+            });
+            const selectedEl = document.getElementById(`round${roundIdx}-match${matchIdx}-${winner === match.team1 ? 'team1' : 'team2'}`);
+            if (selectedEl) selectedEl.classList.add('selected');
+            
+            if (confirm(`🏆 Declare "${winner}" as the winner of this match?`)) {
+                completeMatch(roundIdx, matchIdx, winner);
+            }
+        }
+
+        function completeMatch(roundIdx, matchIdx, winner) {
+            const match = tournament.rounds[roundIdx].matches[matchIdx];
+            match.winner = winner;
+            match.completed = true;
+            tournament.completedMatches++;
+            
+            // Add to history
+            tournament.matchHistory.unshift({
+                round: tournament.rounds[roundIdx].name,
+                match: `${match.team1} vs ${match.team2}`,
+                winner: winner,
+                time: new Date().toLocaleTimeString()
+            });
+            
+            displayMatchHistory();
+            
+            // Update next round bracket
+            updateNextRound(roundIdx, matchIdx, winner);
+            
+            // Show success message
+            const msgDiv = document.getElementById(`winner-msg-${roundIdx}-${matchIdx}`);
+            if (msgDiv) {
+                msgDiv.innerHTML = `<div class="winner-badge">✅ WINNER DECLARED: ${winner} ✅</div>`;
+                setTimeout(() => {
+                    msgDiv.innerHTML = '';
+                }, 2000);
+            }
+            
+            updateProgress();
+            displayRoundInfo();
+            displayCurrentRound(); // Refresh to show completed match
+            
+            // Check if tournament is complete
+            if (roundIdx === tournament.rounds.length - 1 && matchIdx === tournament.rounds[roundIdx].matches.length - 1) {
+                tournament.champion = winner;
+                setTimeout(() => {
+                    showCelebration(tournament.champion);
+                }, 500);
+            }
+        }
+
+        function updateNextRound(roundIdx, matchIdx, winner) {
+            if (roundIdx + 1 >= tournament.rounds.length) {
+                return;
+            }
+            
+            const nextRound = tournament.rounds[roundIdx + 1];
+            const nextMatchIdx = Math.floor(matchIdx / 2);
+            
+            if (nextRound.matches[nextMatchIdx]) {
+                if (matchIdx % 2 === 0) {
+                    nextRound.matches[nextMatchIdx].team1 = winner;
+                    // If both teams now available and it's not a bye situation
+                    if (nextRound.matches[nextMatchIdx].team2 !== null && !nextRound.matches[nextMatchIdx].completed) {
+                        nextRound.matches[nextMatchIdx].waitingForOpponent = false;
+                    }
+                } else {
+                    nextRound.matches[nextMatchIdx].team2 = winner;
+                    // If both teams now available
+                    if (nextRound.matches[nextMatchIdx].team1 !== null && !nextRound.matches[nextMatchIdx].completed) {
+                        nextRound.matches[nextMatchIdx].waitingForOpponent = false;
+                    }
+                }
+            }
+        }
+
+        function goToNextRound() {
+            if (tournament.currentRound + 1 < tournament.rounds.length) {
+                tournament.currentRound++;
+                tournament.waitingForNextRound = false;
+                displayRoundInfo();
+                displayCurrentRound();
+                updateProgress();
+            }
+        }
+
+        function displayMatchHistory() {
+            const container = document.getElementById('matchHistory');
+            container.innerHTML = '<h3>📜 COMPLETE MATCH HISTORY 📜</h3>';
+            
+            if (tournament.matchHistory.length === 0) {
+                container.innerHTML += '<p style="text-align: center; color: #999;">No matches played yet. Click on teams to start playing!</p>';
+                return;
+            }
+            
+            tournament.matchHistory.forEach((history, index) => {
+                container.innerHTML += `
+                    <div class="history-item">
+                        <strong>🏆 MATCH ${index + 1}</strong><br>
+                        📍 <strong>${history.round}</strong><br>
+                        🎯 ${history.match}<br>
+                        ✅ <strong style="color: #4caf50;">WINNER: ${history.winner}</strong><br>
+                        ⏰ ${history.time}
+                    </div>
+                `;
+            });
+        }
+
+        function updateProgress() {
+            const percentage = (tournament.completedMatches / tournament.totalMatches) * 100;
+            document.getElementById('progressFill').style.width = `${percentage}%`;
+        }
+
+        function showCelebration(champion) {
+            const overlay = document.getElementById('celebrationOverlay');
+            document.getElementById('championDisplay').innerHTML = champion;
+            overlay.style.display = 'flex';
+            
+            // Create fireworks
+            for (let i = 0; i < 150; i++) {
+                setTimeout(() => {
+                    const firework = document.createElement('div');
+                    firework.className = 'firework';
+                    firework.style.left = Math.random() * window.innerWidth + 'px';
+                    firework.style.top = Math.random() * window.innerHeight + 'px';
+                    firework.style.background = `hsl(${Math.random() * 360}, 100%, 55%)`;
+                    document.body.appendChild(firework);
+                    setTimeout(() => firework.remove(), 1000);
+                }, i * 40);
+            }
+            
+            // Create falling confetti/balloons
+            for (let i = 0; i < 400; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.style.position = 'fixed';
+                    confetti.style.left = Math.random() * window.innerWidth + 'px';
+                    confetti.style.top = '-20px';
+                    confetti.style.width = Math.random() * 12 + 6 + 'px';
+                    confetti.style.height = Math.random() * 12 + 6 + 'px';
+                    confetti.style.background = `hsl(${Math.random() * 360}, 100%, 60%)`;
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0%';
+                    confetti.style.pointerEvents = 'none';
+                    confetti.style.animation = `fall ${Math.random() * 3 + 2}s linear forwards`;
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 4000);
+                }, i * 15);
+            }
+            
+            // Show champion banner
+            const championSection = document.getElementById('championSection');
+            championSection.innerHTML = `
+                <h2>🏆 TOURNAMENT CHAMPION 🏆</h2>
+                <div class="champion-name">${champion}</div>
+                <p style="font-size: 20px;">👏👏👏 Congratulations to the Champion Team! 👏👏👏</p>
+                <p style="font-size: 18px;">🎉🎉🎉 You played every match manually and emerged victorious! 🎉🎉🎉</p>
+                <p style="font-size: 18px;">🎈🎈🎈 Balloons and confetti fill the air! 🎈🎈🎈</p>
+                <button onclick="resetTournament()" style="margin-top: 25px; font-size: 18px;">🏆 Start New Tournament 🏆</button>
+            `;
+            championSection.classList.remove('hidden');
+            
+            // Console celebration
+            console.log('%c🏆🏆🏆 CHAMPIONSHIP CELEBRATION! 🏆🏆🏆', 'color: gold; font-size: 20px; font-weight: bold');
+            console.log(`%c🏆 WINNER: ${champion} 🏆`, 'color: gold; font-size: 18px');
+            console.log('%c👏 Audience Clapping! 👏', 'color: green; font-size: 16px');
+            console.log('%c🎈 Balloons Falling! 🎈', 'color: red; font-size: 16px');
+            console.log('%c🎉 Confetti Explosion! 🎉', 'color: orange; font-size: 16px');
+            
+            // Auto-close celebration after 7 seconds
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 7000);
+        }
+
+        function resetTournament() {
+            if (confirm('Are you sure you want to start a new tournament? All current progress will be lost.')) {
+                location.reload();
+            }
+        }
+
+        // Add CSS animation for falling
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fall {
+                to {
+                    transform: translateY(100vh) rotate(720deg);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
